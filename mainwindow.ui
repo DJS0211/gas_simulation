@@ -6,19 +6,22 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>969</width>
-    <height>999</height>
+    <width>1068</width>
+    <height>1158</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout" rowstretch="1,3" columnstretch="1,5,1">
+   <layout class="QGridLayout" name="gridLayout" rowstretch="1,2" columnstretch="1,4,1">
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
     <item row="0" column="0">
      <widget class="QFrame" name="frame">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -40,9 +43,15 @@ border-radius: 8px;
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="QLabel" name="label">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
-           <family>黑体</family>
+           <family>微软雅黑</family>
            <pointsize>18</pointsize>
           </font>
          </property>
@@ -66,11 +75,17 @@ margin:0 0 0 0 px;
        </item>
        <item>
         <widget class="QWidget" name="widget" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,2">
           <item>
            <widget class="QLabel" name="label_75">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -104,7 +119,7 @@ border: 0px solid gray;
              <bool>true</bool>
             </property>
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -112,13 +127,13 @@ border: 0px solid gray;
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>31</height>
+              <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>31</height>
+              <height>16777215</height>
              </size>
             </property>
             <property name="font">
@@ -130,9 +145,11 @@ border: 0px solid gray;
               <bold>false</bold>
              </font>
             </property>
+            <property name="cursor">
+             <cursorShape>ArrowCursor</cursorShape>
+            </property>
             <property name="styleSheet">
-             <string notr="true">border-style: outset; 
-border-width: 1px; 
+             <string notr="true">border-width: 1px; 
 border-style:solid;
 border-color: rgb(81,97,230);</string>
             </property>
@@ -158,11 +175,17 @@ border-color: rgb(81,97,230);</string>
        </item>
        <item>
         <widget class="QWidget" name="widget_2" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="3,2">
           <item>
            <widget class="QLabel" name="label_76">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -196,7 +219,7 @@ border: 0px solid gray;
              <bool>true</bool>
             </property>
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -204,13 +227,13 @@ border: 0px solid gray;
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>31</height>
+              <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>31</height>
+              <height>16777215</height>
              </size>
             </property>
             <property name="font">
@@ -223,8 +246,7 @@ border: 0px solid gray;
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">border-style: outset; 
-border-width: 1px; 
+             <string notr="true">border-width: 1px; 
 border-style:solid;
 border-color: rgb(81,97,230);</string>
             </property>
@@ -238,11 +260,17 @@ border-color: rgb(81,97,230);</string>
        </item>
        <item>
         <widget class="QWidget" name="widget_3" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="3,2">
           <item>
            <widget class="QLabel" name="label_77">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -276,7 +304,7 @@ border: 0px solid gray;
              <bool>true</bool>
             </property>
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -284,13 +312,13 @@ border: 0px solid gray;
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>31</height>
+              <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>31</height>
+              <height>16777215</height>
              </size>
             </property>
             <property name="font">
@@ -318,11 +346,17 @@ border-color: rgb(81,97,230);</string>
        </item>
        <item>
         <widget class="QWidget" name="widget_4" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="3,2">
           <item>
            <widget class="QLabel" name="label_78">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -356,7 +390,7 @@ border: 0px solid gray;
              <bool>true</bool>
             </property>
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -364,13 +398,13 @@ border: 0px solid gray;
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>31</height>
+              <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>31</height>
+              <height>16777215</height>
              </size>
             </property>
             <property name="font">
@@ -398,11 +432,17 @@ border-color: rgb(81,97,230);</string>
        </item>
        <item>
         <widget class="QWidget" name="widget_5" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="3,2">
           <item>
            <widget class="QLabel" name="label_79">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -433,7 +473,7 @@ border: 0px solid gray;
           <item>
            <widget class="QComboBox" name="comboBox_3">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -441,13 +481,13 @@ border: 0px solid gray;
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>31</height>
+              <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>31</height>
+              <height>16777215</height>
              </size>
             </property>
             <property name="font">
@@ -467,27 +507,32 @@ border-color: rgb(81,97,230);</string>
             </property>
             <item>
              <property name="text">
-              <string>15</string>
+              <string>16</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>20</string>
+              <string>23</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>25</string>
+              <string>36</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>32</string>
+              <string>100m</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>50</string>
+              <string>200m</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>500m</string>
              </property>
             </item>
            </widget>
@@ -497,11 +542,17 @@ border-color: rgb(81,97,230);</string>
        </item>
        <item>
         <widget class="QWidget" name="widget_6" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="3,2">
           <item>
            <widget class="QLabel" name="label_80">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -522,7 +573,7 @@ border: 0px solid gray;
 }</string>
             </property>
             <property name="text">
-             <string>方位角</string>
+             <string>目标气体模型</string>
             </property>
             <property name="textFormat">
              <enum>Qt::AutoText</enum>
@@ -535,7 +586,7 @@ border: 0px solid gray;
              <bool>true</bool>
             </property>
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -543,13 +594,13 @@ border: 0px solid gray;
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>31</height>
+              <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>31</height>
+              <height>16777215</height>
              </size>
             </property>
             <property name="font">
@@ -577,25 +628,48 @@ border-color: rgb(81,97,230);</string>
        </item>
        <item>
         <widget class="QWidget" name="widget_7" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="styleSheet">
-          <string notr="true">QWidget
-{
-border: 1px solid gray;
-border-radius: 8px;
-}</string>
+          <string notr="true"/>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="1,1">
+          <property name="spacing">
+           <number>6</number>
+          </property>
+          <property name="leftMargin">
+           <number>6</number>
+          </property>
+          <property name="topMargin">
+           <number>6</number>
+          </property>
+          <property name="rightMargin">
+           <number>6</number>
+          </property>
+          <property name="bottomMargin">
+           <number>6</number>
+          </property>
           <item>
            <widget class="QPushButton" name="pushButton_start">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="minimumSize">
              <size>
-              <width>81</width>
+              <width>0</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>81</width>
+              <width>16777215</width>
               <height>16777215</height>
              </size>
             </property>
@@ -609,7 +683,7 @@ border-radius: 8px;
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">border: 2px solid white;</string>
+             <string notr="true"/>
             </property>
             <property name="text">
              <string>开始</string>
@@ -618,15 +692,21 @@ border-radius: 8px;
           </item>
           <item>
            <widget class="QPushButton" name="pushButton_stop">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="minimumSize">
              <size>
-              <width>81</width>
+              <width>0</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>81</width>
+              <width>16777215</width>
               <height>16777215</height>
              </size>
             </property>
@@ -640,7 +720,7 @@ border-radius: 8px;
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">border: 2px solid white;</string>
+             <string notr="true"/>
             </property>
             <property name="text">
              <string>结束</string>
@@ -655,15 +735,42 @@ border-radius: 8px;
     </item>
     <item row="0" column="1">
      <widget class="QFrame" name="frame_7">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_6">
+      <layout class="QVBoxLayout" name="verticalLayout_6" stretch="1,1,8">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>9</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QLabel" name="label_3">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
            <family>楷体</family>
@@ -680,12 +787,30 @@ border-radius: 8px;
        </item>
        <item>
         <widget class="QWidget" name="widget_23" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <layout class="QHBoxLayout" name="horizontalLayout_23">
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item>
            <widget class="QLabel" name="label_7">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="font">
              <font>
-              <family>黑体</family>
+              <family>微软雅黑</family>
               <pointsize>18</pointsize>
              </font>
             </property>
@@ -703,7 +828,7 @@ border-radius: 8px;
           <item>
            <widget class="QComboBox" name="comboBox_2">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -759,40 +884,79 @@ border-radius: 8px;
        </item>
        <item>
         <widget class="QFrame" name="frame_6">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
+          <enum>QFrame::NoFrame</enum>
          </property>
          <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
+          <enum>QFrame::Plain</enum>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_24">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item>
            <widget class="ChartView" name="profile_Tem">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Plain</enum>
             </property>
            </widget>
           </item>
           <item>
            <widget class="ChartView" name="profile_Hum">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Plain</enum>
             </property>
            </widget>
           </item>
           <item>
            <widget class="ChartView" name="profile_Pre">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Plain</enum>
             </property>
            </widget>
           </item>
@@ -805,7 +969,7 @@ border-radius: 8px;
     <item row="0" column="2">
      <widget class="QFrame" name="frame_3">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -821,7 +985,7 @@ border-radius: 8px;
         <widget class="QLabel" name="label_4">
          <property name="font">
           <font>
-           <family>黑体</family>
+           <family>微软雅黑</family>
            <pointsize>18</pointsize>
           </font>
          </property>
@@ -855,7 +1019,7 @@ border-radius: 8px;
 </string>
             </property>
             <property name="text">
-             <string>大气廓线</string>
+             <string>地表反照率</string>
             </property>
             <property name="textFormat">
              <enum>Qt::AutoText</enum>
@@ -898,7 +1062,7 @@ border-style:solid;
 border-color: rgb(81,97,230);</string>
             </property>
             <property name="text">
-             <string>0</string>
+             <string>0.3</string>
             </property>
            </widget>
           </item>
@@ -924,7 +1088,7 @@ border-color: rgb(81,97,230);</string>
 </string>
             </property>
             <property name="text">
-             <string>气溶胶</string>
+             <string>DEM</string>
             </property>
             <property name="textFormat">
              <enum>Qt::AutoText</enum>
@@ -932,7 +1096,7 @@ border-color: rgb(81,97,230);</string>
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="lineEdit_47">
+           <widget class="QPushButton" name="pushButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
               <horstretch>0</horstretch>
@@ -953,21 +1117,15 @@ border-color: rgb(81,97,230);</string>
             </property>
             <property name="font">
              <font>
-              <family>Times New Roman</family>
+              <family>微软雅黑</family>
               <pointsize>12</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">border-style: outset; 
-border-width: 1px; 
-border-style:solid;
-border-color: rgb(81,97,230);</string>
+             <string notr="true"/>
             </property>
             <property name="text">
-             <string>50</string>
+             <string>浏览...</string>
             </property>
            </widget>
           </item>
@@ -993,7 +1151,7 @@ border-color: rgb(81,97,230);</string>
 </string>
             </property>
             <property name="text">
-             <string>云</string>
+             <string>粗糙度</string>
             </property>
             <property name="textFormat">
              <enum>Qt::AutoText</enum>
@@ -1001,7 +1159,7 @@ border-color: rgb(81,97,230);</string>
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="lineEdit_49">
+           <widget class="QPushButton" name="pushButton_2">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
               <horstretch>0</horstretch>
@@ -1022,21 +1180,15 @@ border-color: rgb(81,97,230);</string>
             </property>
             <property name="font">
              <font>
-              <family>Times New Roman</family>
+              <family>微软雅黑</family>
               <pointsize>12</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">border-style: outset; 
-border-width: 1px; 
-border-style:solid;
-border-color: rgb(81,97,230);</string>
+             <string notr="true"/>
             </property>
             <property name="text">
-             <string>0.5</string>
+             <string>浏览...</string>
             </property>
            </widget>
           </item>
@@ -1070,7 +1222,7 @@ border-color: rgb(81,97,230);</string>
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="lineEdit_46">
+           <widget class="QLineEdit" name="lineEdit_58">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
               <horstretch>0</horstretch>
@@ -1105,7 +1257,7 @@ border-style:solid;
 border-color: rgb(81,97,230);</string>
             </property>
             <property name="text">
-             <string>0.1</string>
+             <string>0</string>
             </property>
            </widget>
           </item>
@@ -1131,7 +1283,7 @@ border-color: rgb(81,97,230);</string>
 </string>
             </property>
             <property name="text">
-             <string>粗糙度</string>
+             <string>地表状态</string>
             </property>
             <property name="textFormat">
              <enum>Qt::AutoText</enum>
@@ -1139,7 +1291,7 @@ border-color: rgb(81,97,230);</string>
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="lineEdit_52">
+           <widget class="QLineEdit" name="lineEdit_59">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
               <horstretch>0</horstretch>
@@ -1200,7 +1352,7 @@ border-color: rgb(81,97,230);</string>
 </string>
             </property>
             <property name="text">
-             <string>DEM</string>
+             <string>......</string>
             </property>
             <property name="textFormat">
              <enum>Qt::AutoText</enum>
@@ -1269,7 +1421,7 @@ border-color: rgb(81,97,230);</string>
 </string>
             </property>
             <property name="text">
-             <string>反射率</string>
+             <string>......</string>
             </property>
             <property name="textFormat">
              <enum>Qt::AutoText</enum>
@@ -1325,7 +1477,7 @@ border-color: rgb(81,97,230);</string>
     <item row="1" column="0">
      <widget class="QFrame" name="frame_2">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -1339,9 +1491,15 @@ border-color: rgb(81,97,230);</string>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <widget class="QLabel" name="label_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
-           <family>黑体</family>
+           <family>微软雅黑</family>
            <pointsize>18</pointsize>
           </font>
          </property>
@@ -1359,7 +1517,7 @@ border-color: rgb(81,97,230);</string>
        <item>
         <widget class="QWidget" name="widget_8" native="true">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -1368,7 +1526,7 @@ border-color: rgb(81,97,230);</string>
           <item>
            <widget class="QLabel" name="label_85">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -1387,7 +1545,7 @@ border-color: rgb(81,97,230);</string>
 </string>
             </property>
             <property name="text">
-             <string>望远镜口径(m)</string>
+             <string>太阳天顶角/°</string>
             </property>
             <property name="textFormat">
              <enum>Qt::AutoText</enum>
@@ -1400,99 +1558,21 @@ border-color: rgb(81,97,230);</string>
              <bool>true</bool>
             </property>
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <property name="minimumSize">
              <size>
-              <width>81</width>
-              <height>31</height>
+              <width>0</width>
+              <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>81</width>
-              <height>31</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>Times New Roman</family>
-              <pointsize>12</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">border-style: outset; 
-border-width: 1px; 
-border-style:solid;
-border-color: rgb(81,97,230);</string>
-            </property>
-            <property name="text">
-             <string>0.638</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QWidget" name="widget_9" native="true">
-         <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="3,2">
-          <item>
-           <widget class="QLabel" name="label_89">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font">
-             <font>
-              <family>微软雅黑</family>
-              <pointsize>12</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">color:rgb(0, 0, 0);
-</string>
-            </property>
-            <property name="text">
-             <string>视场角(deg)</string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::AutoText</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_42">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>81</width>
-              <height>31</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>81</width>
-              <height>31</height>
+              <width>16777215</width>
+              <height>16777215</height>
              </size>
             </property>
             <property name="font">
@@ -1519,12 +1599,18 @@ border-color: rgb(81,97,230);</string>
         </widget>
        </item>
        <item>
-        <widget class="QWidget" name="widget_10" native="true">
-         <layout class="QHBoxLayout" name="horizontalLayout_10" stretch="3,2">
+        <widget class="QWidget" name="widget_9" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="3,2">
           <item>
-           <widget class="QLabel" name="label_90">
+           <widget class="QLabel" name="label_89">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -1543,7 +1629,91 @@ border-color: rgb(81,97,230);</string>
 </string>
             </property>
             <property name="text">
-             <string>采样率(GHz)</string>
+             <string>太阳方位角/°</string>
+            </property>
+            <property name="textFormat">
+             <enum>Qt::AutoText</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit_42">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Times New Roman</family>
+              <pointsize>12</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">border-style: outset; 
+border-width: 1px; 
+border-style:solid;
+border-color: rgb(81,97,230);</string>
+            </property>
+            <property name="text">
+             <string>40.0</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="widget_10" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_10" stretch="3,2">
+          <item>
+           <widget class="QLabel" name="label_90">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <family>微软雅黑</family>
+              <pointsize>12</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color:rgb(0, 0, 0);
+</string>
+            </property>
+            <property name="text">
+             <string>观测天顶角</string>
             </property>
             <property name="textFormat">
              <enum>Qt::AutoText</enum>
@@ -1556,21 +1726,21 @@ border-color: rgb(81,97,230);</string>
              <bool>true</bool>
             </property>
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <property name="minimumSize">
              <size>
-              <width>81</width>
-              <height>31</height>
+              <width>0</width>
+              <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>81</width>
-              <height>31</height>
+              <width>16777215</width>
+              <height>16777215</height>
              </size>
             </property>
             <property name="font">
@@ -1589,7 +1759,7 @@ border-style:solid;
 border-color: rgb(81,97,230);</string>
             </property>
             <property name="text">
-             <string>5</string>
+             <string>1</string>
             </property>
            </widget>
           </item>
@@ -1598,11 +1768,17 @@ border-color: rgb(81,97,230);</string>
        </item>
        <item>
         <widget class="QWidget" name="widget_11" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <layout class="QHBoxLayout" name="horizontalLayout_11" stretch="3,2">
           <item>
            <widget class="QLabel" name="label_87">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -1621,7 +1797,7 @@ border-color: rgb(81,97,230);</string>
 </string>
             </property>
             <property name="text">
-             <string>透过率</string>
+             <string>观测方位角/°</string>
             </property>
             <property name="textFormat">
              <enum>Qt::AutoText</enum>
@@ -1634,21 +1810,21 @@ border-color: rgb(81,97,230);</string>
              <bool>true</bool>
             </property>
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <property name="minimumSize">
              <size>
-              <width>81</width>
-              <height>31</height>
+              <width>0</width>
+              <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>81</width>
-              <height>31</height>
+              <width>16777215</width>
+              <height>16777215</height>
              </size>
             </property>
             <property name="font">
@@ -1667,7 +1843,7 @@ border-style:solid;
 border-color: rgb(81,97,230);</string>
             </property>
             <property name="text">
-             <string>0.5</string>
+             <string>90.0</string>
             </property>
            </widget>
           </item>
@@ -1676,11 +1852,17 @@ border-color: rgb(81,97,230);</string>
        </item>
        <item>
         <widget class="QWidget" name="widget_12" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <layout class="QHBoxLayout" name="horizontalLayout_12" stretch="3,2">
           <item>
            <widget class="QLabel" name="label_88">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -1699,7 +1881,7 @@ border-color: rgb(81,97,230);</string>
 </string>
             </property>
             <property name="text">
-             <string>系统效率</string>
+             <string>地日距离/km</string>
             </property>
             <property name="textFormat">
              <enum>Qt::AutoText</enum>
@@ -1712,21 +1894,21 @@ border-color: rgb(81,97,230);</string>
              <bool>true</bool>
             </property>
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <property name="minimumSize">
              <size>
-              <width>81</width>
-              <height>31</height>
+              <width>0</width>
+              <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>81</width>
-              <height>31</height>
+              <width>16777215</width>
+              <height>16777215</height>
              </size>
             </property>
             <property name="font">
@@ -1745,7 +1927,7 @@ border-style:solid;
 border-color: rgb(81,97,230);</string>
             </property>
             <property name="text">
-             <string>0.5</string>
+             <string>170</string>
             </property>
            </widget>
           </item>
@@ -1754,11 +1936,17 @@ border-color: rgb(81,97,230);</string>
        </item>
        <item>
         <widget class="QWidget" name="widget_13" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <layout class="QHBoxLayout" name="horizontalLayout_13" stretch="3,2">
           <item>
            <widget class="QLabel" name="label_102">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -1777,7 +1965,7 @@ border-color: rgb(81,97,230);</string>
 </string>
             </property>
             <property name="text">
-             <string>信噪比</string>
+             <string>响应函数类型</string>
             </property>
             <property name="textFormat">
              <enum>Qt::AutoText</enum>
@@ -1785,35 +1973,29 @@ border-color: rgb(81,97,230);</string>
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="lineEdit_53">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
+           <widget class="QComboBox" name="comboBox_4">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <property name="minimumSize">
              <size>
-              <width>81</width>
-              <height>31</height>
+              <width>0</width>
+              <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>81</width>
-              <height>31</height>
+              <width>16777215</width>
+              <height>16777215</height>
              </size>
             </property>
             <property name="font">
              <font>
-              <family>Times New Roman</family>
+              <family>微软雅黑</family>
               <pointsize>12</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
              </font>
             </property>
             <property name="styleSheet">
@@ -1822,9 +2004,21 @@ border-width: 1px;
 border-style:solid;
 border-color: rgb(81,97,230);</string>
             </property>
-            <property name="text">
-             <string>20</string>
-            </property>
+            <item>
+             <property name="text">
+              <string>高斯</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>三角</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>矩形</string>
+             </property>
+            </item>
            </widget>
           </item>
          </layout>
@@ -1832,11 +2026,17 @@ border-color: rgb(81,97,230);</string>
        </item>
        <item>
         <widget class="QWidget" name="widget_15" native="true">
-         <layout class="QHBoxLayout" name="horizontalLayout_14">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_14" stretch="3,2">
           <item>
            <widget class="QLabel" name="label_103">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -1855,7 +2055,7 @@ border-color: rgb(81,97,230);</string>
 </string>
             </property>
             <property name="text">
-             <string>背景噪声因子</string>
+             <string>半高全宽/nm</string>
             </property>
             <property name="textFormat">
              <enum>Qt::AutoText</enum>
@@ -1868,21 +2068,21 @@ border-color: rgb(81,97,230);</string>
              <bool>true</bool>
             </property>
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <property name="minimumSize">
              <size>
-              <width>81</width>
-              <height>31</height>
+              <width>0</width>
+              <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>81</width>
-              <height>31</height>
+              <width>16777215</width>
+              <height>16777215</height>
              </size>
             </property>
             <property name="font">
@@ -1901,7 +2101,175 @@ border-style:solid;
 border-color: rgb(81,97,230);</string>
             </property>
             <property name="text">
-             <string>5</string>
+             <string>0.75</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="widget_25" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_26" stretch="3,2">
+          <item>
+           <widget class="QLabel" name="label_105">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <family>微软雅黑</family>
+              <pointsize>12</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color:rgb(0, 0, 0);
+</string>
+            </property>
+            <property name="text">
+             <string>载荷视场角</string>
+            </property>
+            <property name="textFormat">
+             <enum>Qt::AutoText</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit_57">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Times New Roman</family>
+              <pointsize>12</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">border-style: outset; 
+border-width: 1px; 
+border-style:solid;
+border-color: rgb(81,97,230);</string>
+            </property>
+            <property name="text">
+             <string>0</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="widget_24" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_25" stretch="3,2">
+          <item>
+           <widget class="QLabel" name="label_104">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <family>微软雅黑</family>
+              <pointsize>12</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color:rgb(0, 0, 0);
+</string>
+            </property>
+            <property name="text">
+             <string>卫星姿态角</string>
+            </property>
+            <property name="textFormat">
+             <enum>Qt::AutoText</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit_56">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Times New Roman</family>
+              <pointsize>12</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">border-style: outset; 
+border-width: 1px; 
+border-style:solid;
+border-color: rgb(81,97,230);</string>
+            </property>
+            <property name="text">
+             <string>0</string>
             </property>
            </widget>
           </item>
@@ -1913,18 +2281,45 @@ border-color: rgb(81,97,230);</string>
     </item>
     <item row="1" column="1">
      <widget class="QFrame" name="frame_5">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_5">
+      <layout class="QVBoxLayout" name="verticalLayout_5" stretch="1,10,10,10,1">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QLabel" name="label_6">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
-           <family>黑体</family>
+           <family>微软雅黑</family>
            <pointsize>18</pointsize>
           </font>
          </property>
@@ -1942,30 +2337,64 @@ border-color: rgb(81,97,230);</string>
        <item>
         <widget class="ChartView" name="profile_TOD">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+         <property name="horizontalScrollBarPolicy">
+          <enum>Qt::ScrollBarAsNeeded</enum>
          </property>
         </widget>
        </item>
        <item>
         <widget class="ChartView" name="profile_tran">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
          </property>
         </widget>
        </item>
        <item>
         <widget class="ChartView" name="profile_radiance">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QProgressBar" name="progressBar">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="value">
+          <number>0</number>
          </property>
         </widget>
        </item>
@@ -1975,7 +2404,7 @@ border-color: rgb(81,97,230);</string>
     <item row="1" column="2">
      <widget class="QFrame" name="frame_4">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -1986,7 +2415,7 @@ border-color: rgb(81,97,230);</string>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_4">
+      <layout class="QVBoxLayout" name="verticalLayout_4" stretch="1,1,10,10">
        <item>
         <widget class="QLabel" name="label_5">
          <property name="sizePolicy">
@@ -1997,7 +2426,7 @@ border-color: rgb(81,97,230);</string>
          </property>
          <property name="font">
           <font>
-           <family>黑体</family>
+           <family>微软雅黑</family>
            <pointsize>18</pointsize>
           </font>
          </property>
@@ -2005,7 +2434,7 @@ border-color: rgb(81,97,230);</string>
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string>环境参数</string>
+          <string>输出</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -2013,93 +2442,385 @@ border-color: rgb(81,97,230);</string>
         </widget>
        </item>
        <item>
-        <widget class="QWidget" name="widget_14" native="true">
+        <widget class="QPushButton" name="pushButton_hdf">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_22" stretch="1,1">
-          <item>
-           <widget class="QPushButton" name="pushButton_visual">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>微软雅黑</family>
-              <pointsize>12</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">border: 2px solid white;</string>
-            </property>
-            <property name="text">
-             <string>可视化输出</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_hdf">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>微软雅黑</family>
-              <pointsize>12</pointsize>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">border: 2px solid white;</string>
-            </property>
-            <property name="text">
-             <string>hdf输出</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>微软雅黑</family>
+           <pointsize>12</pointsize>
+           <weight>50</weight>
+           <italic>false</italic>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border: 2px solid white;</string>
+         </property>
+         <property name="text">
+          <string>hdf输出</string>
+         </property>
         </widget>
        </item>
        <item>
-        <widget class="ChartView" name="graphicsView"/>
+        <widget class="QTableWidget" name="tableWidget">
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="sizeAdjustPolicy">
+          <enum>QAbstractScrollArea::AdjustToContents</enum>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="showGrid">
+          <bool>true</bool>
+         </property>
+         <property name="gridStyle">
+          <enum>Qt::DashDotLine</enum>
+         </property>
+         <attribute name="horizontalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="horizontalHeaderCascadingSectionResizes">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="horizontalHeaderDefaultSectionSize">
+          <number>152</number>
+         </attribute>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="verticalHeaderStretchLastSection">
+          <bool>false</bool>
+         </attribute>
+         <row>
+          <property name="text">
+           <string>1</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>1值</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>2</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>2值</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>3</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>3值</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>4</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>4值</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>5</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>5值</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>6</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>6值</string>
+          </property>
+         </row>
+         <column>
+          <property name="text">
+           <string>1</string>
+          </property>
+         </column>
+         <item row="0" column="0">
+          <property name="text">
+           <string>辐亮度最大值</string>
+          </property>
+          <property name="font">
+           <font>
+            <family>微软雅黑</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
+         </item>
+         <item row="1" column="0">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="font">
+           <font>
+            <family>Times New Roman</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
+         </item>
+         <item row="2" column="0">
+          <property name="text">
+           <string>辐亮度最小值</string>
+          </property>
+          <property name="font">
+           <font>
+            <family>微软雅黑</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
+         </item>
+         <item row="3" column="0">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="font">
+           <font>
+            <family>Times New Roman</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
+         </item>
+         <item row="4" column="0">
+          <property name="text">
+           <string>辐亮度中位数</string>
+          </property>
+          <property name="font">
+           <font>
+            <family>微软雅黑</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
+         </item>
+         <item row="5" column="0">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="font">
+           <font>
+            <family>Times New Roman</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
+         </item>
+         <item row="6" column="0">
+          <property name="text">
+           <string>光学厚度最大值</string>
+          </property>
+          <property name="font">
+           <font>
+            <family>微软雅黑</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
+         </item>
+         <item row="7" column="0">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="font">
+           <font>
+            <family>Times New Roman</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
+         </item>
+         <item row="8" column="0">
+          <property name="text">
+           <string>光学厚度最小值</string>
+          </property>
+          <property name="font">
+           <font>
+            <family>微软雅黑</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
+         </item>
+         <item row="9" column="0">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="font">
+           <font>
+            <family>Times New Roman</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
+         </item>
+         <item row="10" column="0">
+          <property name="text">
+           <string>光学厚度中位数</string>
+          </property>
+          <property name="font">
+           <font>
+            <family>微软雅黑</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
+         </item>
+         <item row="11" column="0">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="font">
+           <font>
+            <family>Times New Roman</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTableWidget" name="tableWidget_2">
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <attribute name="horizontalHeaderVisible">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="horizontalHeaderDefaultSectionSize">
+          <number>76</number>
+         </attribute>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="verticalHeaderStretchLastSection">
+          <bool>false</bool>
+         </attribute>
+         <row>
+          <property name="text">
+           <string>新建行</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>新建行</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>新建行</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>新建行</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>新建行</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>新建行</string>
+          </property>
+         </row>
+         <column>
+          <property name="text">
+           <string>波长</string>
+          </property>
+          <property name="font">
+           <font>
+            <family>微软雅黑</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>辐亮度</string>
+          </property>
+          <property name="font">
+           <font>
+            <family>微软雅黑</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+         </column>
+        </widget>
        </item>
       </layout>
      </widget>

@@ -1,0 +1,24 @@
+atmosphere_file ./dat/USS_16.dat
+source solar kurudz_full.txt
+mol_tau_file abs mol_tau_file_CO2.txt
+
+day_of_year 170          # Correct for Earth-Sun distance
+albedo 0.3               # Surface albedo
+
+sza 0                # Solar zenith angle
+phi0 40               # Solar azimuth angle
+umu 1            # Cosine of the viewing/sensor zenith angle
+phi 90                  # Sensor azimuth angle
+zout toa         # the sensor altitude above the ground  (TOA:top of atmosphere)
+
+data_files_path  ../data/
+
+rte_solver disort        # Radiative transfer equation solver
+number_of_streams  16     # Number of streams
+wavelength 1589.9989403 1675.0069215   # Wavelength range [nm]
+
+slit_function_file slit.dat  # Location of slit function
+
+output_user lambda wavenumber uu
+
+verbose

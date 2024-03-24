@@ -1,3 +1,4 @@
+from PySide6.QtCharts import QChartView
     # # 绘制透过率图
     # tranList = np.exp(-2*todList)
     # fig=plt.figure(figsize=(1050/100, 750/100),dpi=100,facecolor='none')

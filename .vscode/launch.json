@@ -5,12 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Current File",
-            "type": "python",
+            "name": "Python 调试程序: 当前文件",
+            "type": "debugpy",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "justMyCode": true
+            "justMyCode": false,
+            // "args": ["CO2","6355","6365","./HITRAN_data/HITRAN_CO2_all.par","./USS/USS_16.xy"]
+            "purpose": ["debug-in-terminal"]
         }
     ]
 }

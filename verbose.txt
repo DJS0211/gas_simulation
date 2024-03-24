@@ -1,0 +1,3 @@
+Unknown command on line 5
+.0
+Error in input file! Please check your input file and retry!
