@@ -10,16 +10,28 @@ sza 0
 phi0 40.0
 umu 1.0
 phi 90.0
-zout toa         # the sensor altitude above the ground  (TOA:top of atmosphere)
+zout toa
 
-data_files_path  ../data/
+rte_solver disort
 
-rte_solver disort        # Radiative transfer equation solver
+number_of_streams 16
 
-number_of_streams  16     # Number of streams
+wavelength 1571.1115488 1573.5486577
+slit_function_file slit.dat
 
-wavelength 1571.1115488 1573.5486577 # Wavelength range [nm]
-slit_function_file slit.dat  # Location of slit function
+aerosol_vulcan 1
+
+aerosol_haze 5
+
+aerosol_season 1
+
+aerosol_visibility 5
+
+aerosol_file tau AERO_TAU.DAT
+
+aerosol_modify ssa set 0.52
+
+aerosol_modify gg set 0.23
 
 output_user lambda wavenumber uu
 

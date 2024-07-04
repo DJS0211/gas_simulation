@@ -83,13 +83,25 @@ class window(QtWidgets.QMainWindow, Ui_MainWindow):
         phi0 = float(MainWindow.lineEdit_42.text())
         umu = float(MainWindow.lineEdit_44.text())
         phi = float(MainWindow.lineEdit_41.text())
+        vis = float(MainWindow.lineEdit_55.text())
+        # 读取大气模式
+        mode_dict = {
+            0: 'User_defined',
+            1: 'Clear',
+            2: 'Cloud',
+            3: 'Dust',
+            4: 'Slight_haze',
+            5: 'Moderate_haze',
+            6: 'Heavy_haze'
+        }
+        atm_mode = mode_dict.get(MainWindow.comboBox_2.currentIndex())
         # 读取参数生成狭缝函数
         slit_type = 1 if MainWindow.comboBox_4.currentText == '高斯' else 2 if MainWindow.comboBox_4.currentText == '三角' else 3
         FWHM = float(MainWindow.lineEdit_54.text())
 
         # 创建线程实例时传递参数
         # profile_num代表UI界面选择的默认廓线文件
-        self.lblrtm_thread = LBLRTMThread(gas, wav_min, wav_max, spec_Res, line_data, mls_data, profile_num, day_of_year, albedo, sza, phi0, umu, phi, slit_type, FWHM)
+        self.lblrtm_thread = LBLRTMThread(gas, wav_min, wav_max, spec_Res, line_data, mls_data, profile_num, day_of_year, albedo, sza, phi0, umu, phi, slit_type, FWHM, vis, atm_mode)
         # 连接信号与槽
         self.lblrtm_thread.resultReady.connect(self.simu_output)
         self.lblrtm_thread.progressChanged.connect(self.update_progressbar)
@@ -208,7 +220,7 @@ class window(QtWidgets.QMainWindow, Ui_MainWindow):
     #     y_index = 0 if cursor_y < margin_width else 2 if cursor_y > window_height - margin_width else 1
     #     # 设置鼠标形状
     #     self.setCursor(self.cursor_map[(x_index,y_index)])
-        
+  
 class LBLRTMThread(QtCore.QThread):
     # 定义一个带有结果的信号
     resultReady = QtCore.Signal(tuple)
@@ -219,7 +231,7 @@ class LBLRTMThread(QtCore.QThread):
     # 定义更新表格2的信号
     tableChanged_2 = QtCore.Signal(tuple)
 
-    def __init__(self, gas, wav_min, wav_max, spec_Res, line_data, mls_data, profile_num, day_of_year, albedo, sza, phi0, umu, phi, slit_type, FWHM):
+    def __init__(self, gas, wav_min, wav_max, spec_Res, line_data, mls_data, profile_num, day_of_year, albedo, sza, phi0, umu, phi, slit_type, FWHM, vis, atm_mode):
         super().__init__()  # 调用父类的初始化方法
         self.gas = gas
         self.wav_min = wav_min
@@ -236,6 +248,8 @@ class LBLRTMThread(QtCore.QThread):
         self.phi = phi
         self.slit_type = slit_type
         self.FWHM = FWHM
+        self.vis = vis
+        self.atm_mode = atm_mode
         # 设置一个终止线程的标志
         self.stop_requested = False
 
@@ -244,6 +258,7 @@ class LBLRTMThread(QtCore.QThread):
         if not self.stop_requested:   
             # 解决调试过程中无法停在QThread里的断点的问题，当不调试时记得注释掉这一行
             # debugpy.debug_this_thread()
+
             # 读取线数据和环境参数
             dictLineLists = py4cats.higstract(self.line_data,(self.wav_min,self.wav_max))
             mls = py4cats.atmRead(self.mls_data,extract=self.gas)
@@ -251,7 +266,7 @@ class LBLRTMThread(QtCore.QThread):
             # 计算光学厚度、透过率
             dodList = py4cats.lbl2od(mls,dictLineLists)
             todList = py4cats.dod2tod(dodList)
-            # radNadir_0 = py4cats.dod2ri(dodList, obsAngle=180, tSurface='BoA',space=-6000) #因为太阳被形容为温度为6000K的黑体，所以space=-6000代表太阳光谱，这个space变量也可以是文件名，即可从文件中读取辐射光谱
+            # radNadir_0 = py4cats.dod2ri(dodList, obsAngle=180, tSurface='BoA',space=-6000) # 因为太阳被形容为温度为6000K的黑体，所以space=-6000代表太阳光谱，这个space变量也可以是文件名，即可从文件中读取辐射光谱
             # radNadir = radNadir_0.convolve(self.spec_Res, 'G') # 卷积操作
 
             # 更新进度条
@@ -264,10 +279,15 @@ class LBLRTMThread(QtCore.QThread):
             # 计算辐射强度
             # 读取内容至字典中
             variables = {}
-            with open('UVSPEC_Clear.INP', 'r') as file:
+            filename = './typical_INP/' + self.atm_mode + '.INP'
+            with open(filename, 'r') as file:
                 for line in file:
                     parts = line.split(' ')
-                    variables[parts[0]] = ' '.join(parts[1:])
+                    if parts[0] == 'aerosol_modify':
+                        parts[0] = parts[0] + ' ' + parts[1] + ' ' + parts[2]
+                        variables[parts[0]] = parts[3]
+                    else :
+                        variables[parts[0]] = ' '.join(parts[1:])
             file.close()
             # 为防止出现波数起始值不统一的情况，直接使用todList的波数值，即原始线数据的实际波数值，不使用UI界面上读取的波数值
             # 同时需要注意，这里的波长值必须与太阳光谱kurudz_full.txt里的波长值完全一致，不然Libradtran无法运行
@@ -294,10 +314,10 @@ class LBLRTMThread(QtCore.QThread):
                 return
             # 更新进度条
             self.progressChanged.emit(25)
-            # time.sleep(2)
+            time.sleep(2)
 
             # 根据UI界面的参数修改INP文件
-            variables['wavelength'] = str(wavelength_min_input) + ' ' + str(wavelength_max_input) + ' # Wavelength range [nm]'
+            variables['wavelength'] = str(wavelength_min_input) + ' ' + str(wavelength_max_input)
             variables['day_of_year'] = self.day_of_year
             variables['albedo'] = self.albedo
             variables['sza'] = int(self.sza)
@@ -306,6 +326,7 @@ class LBLRTMThread(QtCore.QThread):
             variables['phi'] = self.phi
             variables['mol_tau_file'] = 'abs ' + 'mol_tau_file_' + self.gas +'.txt'
             variables['atmosphere_file'] = './dat/USS_' + self.profile_num + '.dat'
+            # variables['aerosol_visibility'] = self.vis
             # 将读取的变量写入INP文件
             filename_inp = 'UVSPEC_Clear_' + self.gas + '.INP'
             filename_out = 'UVSPEC_Clear_' + self.gas + '.out'
@@ -336,7 +357,7 @@ class LBLRTMThread(QtCore.QThread):
             # time.sleep(2)
 
             # 控制命令行,TOA值用Libradtran的DISORT模型算，所有诊断消息将写入verbose.txt
-            run_command(f"../../libRadtran2.0.5/libRadtran-2.0.5/bin/uvspec <{filename_inp}> {filename_out}")
+            run_command(f"../../libRadtran2.0.5/libRadtran-2.0.5/bin/uvspec <{filename_inp}> {filename_out} 2> verbose.txt")
 
             # 打开文件并读取TOA数据
             with open(filename_out, 'r') as file:

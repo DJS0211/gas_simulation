@@ -14,8 +14,8 @@ def mol_tau(self,gas, wav_min, wav_max, line_data, mls_data, profile_num, stop_r
 		R = 8.31
 		temp_mls = np.zeros((len(mls),len(mls[0])))
 		name = ['z','pressure','T','air','H2O','CO2','O3','N2O','CO','CH4','O2','NO','SO2','NO2','NH3','HNO3','OH','HF','HCl','HBr','HI','ClO','OCS','H2CO','HOCl','N2','HCN','CH3Cl','H2O2','C2H2','C2H6','PH3','HO2']
-		temp_mls[:,0] = mls['z'] /(1e+5)
-		temp_mls[:,1] = mls['p'] /1000
+		temp_mls[:,0] = mls['z'] /(1e+5) # 单位从cm换算成km
+		temp_mls[:,1] = mls['p'] /1000   # 单位从dyn/cm**2换算成kPa
 		for i in range(len(name)-2):
 			temp_mls[:,i+2] = mls[name[i+2]] # 分子数密度单位就用molec/m**3
 		filename_mls = './dat/USS_' + profile_num + '.dat'
