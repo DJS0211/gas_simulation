@@ -77,13 +77,22 @@ class window(QtWidgets.QMainWindow, Ui_MainWindow):
         profile_num = MainWindow.comboBox_3.currentText()
         mls_data = './USS/USS_' + profile_num + '.xy' #廓线数据
         # 读取参数传给libradtran计算辐射强度
-        day_of_year = int(MainWindow.lineEdit_43.text())
-        albedo = float(MainWindow.lineEdit_50.text())
-        sza = float(MainWindow.lineEdit_45.text())
-        phi0 = float(MainWindow.lineEdit_42.text())
-        umu = float(MainWindow.lineEdit_44.text())
-        phi = float(MainWindow.lineEdit_41.text())
-        vis = float(MainWindow.lineEdit_55.text())
+        day_of_year = int(MainWindow.lineEdit_43.text()) # 地日距离
+        albedo = float(MainWindow.lineEdit_50.text()) # 反照率
+        sza = float(MainWindow.lineEdit_45.text()) # 太阳天顶角
+        phi0 = float(MainWindow.lineEdit_42.text()) # 太阳方位角
+        umu = float(MainWindow.lineEdit_44.text()) # 观测天顶角的余弦值
+        phi = float(MainWindow.lineEdit_41.text()) # 观测方位角
+        vis = float(MainWindow.lineEdit_55.text()) # 能见度
+        ssa = float(MainWindow.lineEdit_59.text()) # 气溶胶单次散射反照率
+        gg = float(MainWindow.lineEdit_51.text()) # 气溶胶非对称因子
+        # 读取光源为主动光源时的参数
+        sslidar_area = float(MainWindow.lineEdit_2.text()) # 探测器面积
+        sslidar_energy = float(MainWindow.lineEdit.text()) # 激光脉冲能量
+        sslidar_eff= float(MainWindow.lineEdit_3.text()) # 探测器效率
+        sslidar_pos = float(MainWindow.lineEdit_4.text()) # 探测器高度
+        sslidar_range = float(MainWindow.lineEdit_5.text()) # 单层高度
+        sslidar_nranges = int(MainWindow.lineEdit_6.text()) # 探测层数
         # 读取大气模式
         mode_dict = {
             0: 'User_defined',
@@ -94,14 +103,22 @@ class window(QtWidgets.QMainWindow, Ui_MainWindow):
             5: 'Moderate_haze',
             6: 'Heavy_haze'
         }
-        atm_mode = mode_dict.get(MainWindow.comboBox_2.currentIndex())
+        atm_mode = mode_dict.get(MainWindow.comboBox_2.currentIndex()) # 大气模式
+        # 读取地表类型(注意，在UI界面设置中把14号crop_mosaic删掉了，所以要加一个if)
+        if MainWindow.comboBox_5.currentIndex() < 14 :
+            surface_type = MainWindow.comboBox_5.currentIndex()
+        else :
+            surface_type = MainWindow.comboBox_5.currentIndex() + 1
+        # 读取光源
+        source_type = 1 if MainWindow.comboBox_6.currentIndex() == 0 else 2
         # 读取参数生成狭缝函数
         slit_type = 1 if MainWindow.comboBox_4.currentText == '高斯' else 2 if MainWindow.comboBox_4.currentText == '三角' else 3
         FWHM = float(MainWindow.lineEdit_54.text())
 
         # 创建线程实例时传递参数
         # profile_num代表UI界面选择的默认廓线文件
-        self.lblrtm_thread = LBLRTMThread(gas, wav_min, wav_max, spec_Res, line_data, mls_data, profile_num, day_of_year, albedo, sza, phi0, umu, phi, slit_type, FWHM, vis, atm_mode)
+        self.lblrtm_thread = LBLRTMThread(gas, wav_min, wav_max, spec_Res, line_data, mls_data, profile_num, day_of_year, albedo, sza, phi0, umu, phi, slit_type, FWHM, vis, atm_mode, 
+                                          surface_type, ssa, gg, source_type, sslidar_area, sslidar_energy, sslidar_eff, sslidar_pos, sslidar_range, sslidar_nranges)
         # 连接信号与槽
         self.lblrtm_thread.resultReady.connect(self.simu_output)
         self.lblrtm_thread.progressChanged.connect(self.update_progressbar)
@@ -125,8 +142,10 @@ class window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.profile_TOD .setChart(chart_od)
         chart_tran = chart_draw('透过率', *chart_tran_data, r'Wavenumber / cm<sup>-1</sup>', 'Transmittance')
         self.profile_tran.setChart(chart_tran)
-        chart_radiance = chart_draw('辐亮度', *chart_radiance_data, r'Wavenumber / cm<sup>-1</sup>', 'Radiance')
-        self.profile_radiance.setChart(chart_radiance)
+        # 当光源是主动光源时，就不用画辐亮度的图
+        if MainWindow.comboBox_6.currentIndex() == 0:
+            chart_radiance = chart_draw('辐亮度', *chart_radiance_data, r'Wavenumber / cm<sup>-1</sup>', 'Radiance')
+            self.profile_radiance.setChart(chart_radiance)
         # 更新进度条
         self.progressBar.setValue(100)
     
@@ -231,7 +250,8 @@ class LBLRTMThread(QtCore.QThread):
     # 定义更新表格2的信号
     tableChanged_2 = QtCore.Signal(tuple)
 
-    def __init__(self, gas, wav_min, wav_max, spec_Res, line_data, mls_data, profile_num, day_of_year, albedo, sza, phi0, umu, phi, slit_type, FWHM, vis, atm_mode):
+    def __init__(self, gas, wav_min, wav_max, spec_Res, line_data, mls_data, profile_num, day_of_year, albedo, sza, phi0, umu, phi, slit_type, FWHM, vis, 
+                 atm_mode, surface_type, ssa, gg, source_type, sslidar_area, sslidar_energy, sslidar_eff, sslidar_pos, sslidar_range, sslidar_nranges):
         super().__init__()  # 调用父类的初始化方法
         self.gas = gas
         self.wav_min = wav_min
@@ -250,6 +270,16 @@ class LBLRTMThread(QtCore.QThread):
         self.FWHM = FWHM
         self.vis = vis
         self.atm_mode = atm_mode
+        self.surface_type = surface_type
+        self.ssa = ssa
+        self.gg = gg
+        self.source_type = source_type
+        self.sslidar_area = sslidar_area
+        self.sslidar_energy = sslidar_energy
+        self.sslidar_eff = sslidar_eff
+        self.sslidar_pos = sslidar_pos
+        self.sslidar_range = sslidar_range
+        self.sslidar_nranges = sslidar_nranges
         # 设置一个终止线程的标志
         self.stop_requested = False
 
@@ -283,17 +313,21 @@ class LBLRTMThread(QtCore.QThread):
             with open(filename, 'r') as file:
                 for line in file:
                     parts = line.split(' ')
+                    # 分情况部署字典的键和值
                     if parts[0] == 'aerosol_modify':
                         parts[0] = parts[0] + ' ' + parts[1] + ' ' + parts[2]
                         variables[parts[0]] = parts[3]
+                    elif parts[0] == 'sslidar':
+                        parts[0] = parts[0] + ' ' + parts[1]
+                        variables[parts[0]] = parts[2]
                     else :
                         variables[parts[0]] = ' '.join(parts[1:])
             file.close()
             # 为防止出现波数起始值不统一的情况，直接使用todList的波数值，即原始线数据的实际波数值，不使用UI界面上读取的波数值
-            # 同时需要注意，这里的波长值必须与太阳光谱kurudz_full.txt里的波长值完全一致，不然Libradtran无法运行
+            # 同时需要注意，这里的波长值必须与太阳光谱kurudz_0.01nm.txt里的波长值完全一致，不然Libradtran无法运行
             column_kurudz_wav = []
-            # 读取太阳光谱kurudz_full.txt里的波长值
-            with open('kurudz_full.txt','r') as f:
+            # 读取太阳光谱kurudz_0.01nm.txt里的波长值
+            with open('kurudz_0.01nm.txt','r') as f:
                 lines = f.readlines()
             f.close()
             for line in lines :
@@ -319,14 +353,35 @@ class LBLRTMThread(QtCore.QThread):
             # 根据UI界面的参数修改INP文件
             variables['wavelength'] = str(wavelength_min_input) + ' ' + str(wavelength_max_input)
             variables['day_of_year'] = self.day_of_year
-            variables['albedo'] = self.albedo
             variables['sza'] = int(self.sza)
             variables['phi0'] = self.phi0
             variables['umu'] = self.umu
             variables['phi'] = self.phi
-            variables['mol_tau_file'] = 'abs ' + 'mol_tau_file_' + self.gas +'.txt'
             variables['atmosphere_file'] = './dat/USS_' + self.profile_num + '.dat'
-            # variables['aerosol_visibility'] = self.vis
+            variables['mol_tau_file'] = 'abs ' + 'mol_tau_file_' + self.gas +'.txt'
+            # 这一块的代码可以优化一下，更简洁地根据所选典型场景来设置参数
+            # 典型场景的visibility先固定好，后期优化代码后可以给个范围供用户调整
+            if 'User_defined' in self.atm_mode:
+                variables['aerosol_visibility'] = self.vis
+                variables['aerosol_modify ssa set'] = self.ssa
+                variables['aerosol_modify gg set'] = self.gg
+            # 如果地表类型为自定义，则读取地表反射率值
+            if self.surface_type == 0:
+                variables['albedo'] = self.albedo
+            else :
+                variables['albedo_library'] = 'IGBP'
+                variables['brdf_rpv_type'] = self.surface_type
+            # 如果光源为主动光源，则修改rte_solver,删除output_user lambda wavenumber uu和slit_function_file,并且读取sslidar相关参数值(注意要保留source solar)
+            if self.source_type == 2:
+                variables['rte_solver'] = 'sslidar'
+                del variables['output_user']
+                del variables['slit_function_file']
+                variables['sslidar area'] = self.sslidar_area
+                variables['sslidar E0'] = self.sslidar_energy
+                variables['sslidar eff'] = self.sslidar_eff
+                variables['sslidar position'] = self.sslidar_pos
+                variables['sslidar_nranges'] = self.sslidar_nranges
+                variables['sslidar range'] = self.sslidar_range
             # 将读取的变量写入INP文件
             filename_inp = 'UVSPEC_Clear_' + self.gas + '.INP'
             filename_out = 'UVSPEC_Clear_' + self.gas + '.out'
