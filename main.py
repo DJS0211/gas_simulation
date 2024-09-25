@@ -3,6 +3,8 @@ from PySide6.QtWidgets import QMessageBox, QPushButton, QApplication, QWidget, Q
 from PySide6.QtWidgets import QTableWidget,QTableWidgetItem,QHeaderView
 from PySide6.QtGui import QGuiApplication, QColor, QPalette, QAction, QIcon, QDesktopServices,QFont,QBrush,QPen,QCursor
 from mainwindow import Ui_MainWindow
+from IGBP_range import Ui_Frame
+from albedo_range import Ui_Frame_albedo
 import sys
 import py4cats
 import matplotlib.pyplot as plt
@@ -14,8 +16,15 @@ from PySide6.QtCharts import QChart,QChartView,QAbstractAxis,QAbstractSeries,QVa
 from PySide6.QtCore import QMargins,Qt,QRectF
 import subprocess
 import mol_tau_file
-# import debugpy
+import re
+import shutil
+import os
+from netCDF4 import Dataset
+import debugpy
 import time
+import dill as pickle
+import copy
+from py4cats.art.xSection import xsArray
 # # 指定字体名称
 # rcParams['font.family'] = 'Arial'
 
@@ -64,21 +73,26 @@ class window(QtWidgets.QMainWindow, Ui_MainWindow):
         #     (2,2) : Qt.CursorShape.SizeFDiagCursor  # 右下区域
         # }
 
+        # 将地表类型和地表反射率下拉框的改变与槽函数相连(共用一个子窗口)
+        self.comboBox_5.currentIndexChanged.connect(self.check_index_type)
+        self.comboBox_7.currentIndexChanged.connect(self.check_index_albedo)
+
     def startLBLRTM(self):
         # 更新进度条
         self.progressBar.setValue(0)
         # MainWindow 的这些组件是在主线程中创建的，所以需要确保所有与 GUI 相关的操作都在主线程中执行
         # 读取界面参数
         gas = MainWindow.comboBox.currentText() #气体
-        wav_min = float(MainWindow.lineEdit_33.text()) #波数最小值
-        wav_max = float(MainWindow.lineEdit_34.text()) #波数最大值
+        # 五院老师要求在界面上将波数改成波长，所以这里进行一下转换
+        wav_min = round(1/(float(MainWindow.lineEdit_34.text()) * 10**(-7)),3) #波数最小值
+        wav_max = round(1/(float(MainWindow.lineEdit_33.text()) * 10**(-7)),3) #波数最大值
+        print(wav_min,wav_max)
         spec_Res = float(MainWindow.lineEdit_35.text()) #光谱分辨率
         line_data = './HITRAN_data/HITRAN_' + gas + '_all.par' #HITRAN线数据
         profile_num = MainWindow.comboBox_3.currentText()
         mls_data = './USS/USS_' + profile_num + '.xy' #廓线数据
         # 读取参数传给libradtran计算辐射强度
-        day_of_year = int(MainWindow.lineEdit_43.text()) # 地日距离
-        albedo = float(MainWindow.lineEdit_50.text()) # 反照率
+        albedo_value = float(MainWindow.lineEdit_50.text()) # 反照率
         sza = float(MainWindow.lineEdit_45.text()) # 太阳天顶角
         phi0 = float(MainWindow.lineEdit_42.text()) # 太阳方位角
         umu = float(MainWindow.lineEdit_44.text()) # 观测天顶角的余弦值
@@ -104,11 +118,13 @@ class window(QtWidgets.QMainWindow, Ui_MainWindow):
             6: 'Heavy_haze'
         }
         atm_mode = mode_dict.get(MainWindow.comboBox_2.currentIndex()) # 大气模式
-        # 读取地表类型(注意，在UI界面设置中把14号crop_mosaic删掉了，所以要加一个if)
-        if MainWindow.comboBox_5.currentIndex() < 14 :
-            surface_type = MainWindow.comboBox_5.currentIndex()
-        else :
-            surface_type = MainWindow.comboBox_5.currentIndex() + 1
+        
+        # 读取tab_Widget现在所处的tab
+        tab = MainWindow.tabWidget.currentIndex()
+        # 读取地表类型
+        surface_type = MainWindow.comboBox_5.currentIndex()
+        # 读取地表反射率-数据类型选择
+        albedo_type = MainWindow.comboBox_7.currentIndex()
         # 读取光源
         source_type = 1 if MainWindow.comboBox_6.currentIndex() == 0 else 2
         # 读取参数生成狭缝函数
@@ -117,13 +133,14 @@ class window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # 创建线程实例时传递参数
         # profile_num代表UI界面选择的默认廓线文件
-        self.lblrtm_thread = LBLRTMThread(gas, wav_min, wav_max, spec_Res, line_data, mls_data, profile_num, day_of_year, albedo, sza, phi0, umu, phi, slit_type, FWHM, vis, atm_mode, 
-                                          surface_type, ssa, gg, source_type, sslidar_area, sslidar_energy, sslidar_eff, sslidar_pos, sslidar_range, sslidar_nranges)
+        self.lblrtm_thread = LBLRTMThread(gas, wav_min, wav_max, spec_Res, line_data, mls_data, profile_num, albedo_value, sza, phi0, umu, phi, slit_type, FWHM, vis, atm_mode, 
+                                          tab, surface_type, albedo_type, ssa, gg, source_type, sslidar_area, sslidar_energy, sslidar_eff, sslidar_pos, sslidar_range, sslidar_nranges)
         # 连接信号与槽
         self.lblrtm_thread.resultReady.connect(self.simu_output)
         self.lblrtm_thread.progressChanged.connect(self.update_progressbar)
         self.lblrtm_thread.tableChanged.connect(self.update_table)
         self.lblrtm_thread.tableChanged_2.connect(self.update_table_2)
+        self.lblrtm_thread.clear_signal.connect(self.clear_output)
         
         # 启动线程来运行LBLRTM函数
         self.lblrtm_thread.start()
@@ -146,8 +163,19 @@ class window(QtWidgets.QMainWindow, Ui_MainWindow):
         if MainWindow.comboBox_6.currentIndex() == 0:
             chart_radiance = chart_draw('辐亮度', *chart_radiance_data, r'Wavenumber / cm<sup>-1</sup>', 'Radiance')
             self.profile_radiance.setChart(chart_radiance)
-        # 更新进度条
-        self.progressBar.setValue(100)
+    
+    # 用于清理输出的图片和数据表格(当批量计算时)
+    def clear_output(self):
+        # 设置为空的 QChart 对象
+        self.profile_TOD.setChart(QChart())
+        self.profile_tran.setChart(QChart())
+        self.profile_radiance.setChart(QChart())
+        # 清空表格内容，但保留行和列的结构
+        # 清除指定单元格的内容
+        rows_to_clear = [1, 3, 5, 7, 9, 11]
+        for row in rows_to_clear:
+            self.tableWidget.takeItem(row, 0)  # 清除指定行，第0列的内容
+        self.tableWidget_2.clearContents()
     
     # 用于更新UI界面大气模式
     def change_atmosphere(self):
@@ -213,6 +241,22 @@ class window(QtWidgets.QMainWindow, Ui_MainWindow):
             widget_TOA.setTextAlignment(Qt.AlignCenter)
             widget_TOA.setFont(font)
             self.tableWidget_2.setItem(i,1,widget_TOA)
+
+    def check_index_type(self):
+        # 检查地表类型下拉框的currentIndex，如果是17，则显示根据经纬度选择地表类型的子窗体
+        if self.comboBox_5.currentIndex() == 17:
+            Subwindow_IGBP.move(MainWindow.x()+MainWindow.width(),MainWindow.y())
+            Subwindow_IGBP.show()
+        else: 
+            Subwindow_IGBP.hide()
+
+    def check_index_albedo(self):
+        # 检查地表反射率下拉框的currentIndex，如果是1，则显示根据经纬度选择地表反射率的子窗体
+        if self.comboBox_7.currentIndex() == 1:
+            Subwindow_albedo.move(MainWindow.x()+MainWindow.width(),MainWindow.y())
+            Subwindow_albedo.show()
+        else: 
+            Subwindow_albedo.hide()
     
     # def changeButtonStyle(self):
     #     # 创建一个阴影效果的实例
@@ -239,7 +283,39 @@ class window(QtWidgets.QMainWindow, Ui_MainWindow):
     #     y_index = 0 if cursor_y < margin_width else 2 if cursor_y > window_height - margin_width else 1
     #     # 设置鼠标形状
     #     self.setCursor(self.cursor_map[(x_index,y_index)])
-  
+
+class window_IGBP(QtWidgets.QFrame, Ui_Frame):
+    # # 定义一个点击确定键的信号
+    # confirmClicked = QtCore.Signal()
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+        self.setWindowTitle("设置地表类型经纬度范围")
+        self.resize(300,100)
+        self.pushButton.clicked.connect(self.IGBP_confirm)
+
+    def IGBP_confirm(self):
+        # # 发射信号
+        # self.confirmClicked.emit()
+        # 不关闭子窗口，打印一行字表示经纬度设置成功
+        print("地表类型经纬度设置成功!")
+
+class window_albedo(QtWidgets.QFrame, Ui_Frame_albedo):
+    # # 定义一个点击确定键的信号
+    # confirmClicked = QtCore.Signal()
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+        self.setWindowTitle("设置地表反射率经纬度范围")
+        self.resize(300,100)
+        self.pushButton.clicked.connect(self.albedo_confirm)
+
+    def albedo_confirm(self):
+        # # 发射信号
+        # self.confirmClicked.emit()
+        # 不关闭子窗口，打印一行字表示经纬度设置成功
+        print("地表反射率经纬度设置成功!")
+    
 class LBLRTMThread(QtCore.QThread):
     # 定义一个带有结果的信号
     resultReady = QtCore.Signal(tuple)
@@ -249,9 +325,11 @@ class LBLRTMThread(QtCore.QThread):
     tableChanged = QtCore.Signal(tuple)
     # 定义更新表格2的信号
     tableChanged_2 = QtCore.Signal(tuple)
+    # 定义清理输出的图片和数据表格的信号
+    clear_signal = QtCore.Signal()
 
-    def __init__(self, gas, wav_min, wav_max, spec_Res, line_data, mls_data, profile_num, day_of_year, albedo, sza, phi0, umu, phi, slit_type, FWHM, vis, 
-                 atm_mode, surface_type, ssa, gg, source_type, sslidar_area, sslidar_energy, sslidar_eff, sslidar_pos, sslidar_range, sslidar_nranges):
+    def __init__(self, gas, wav_min, wav_max, spec_Res, line_data, mls_data, profile_num, albedo_value, sza, phi0, umu, phi, slit_type, FWHM, vis, 
+                 atm_mode, tab, surface_type, albedo_type, ssa, gg, source_type, sslidar_area, sslidar_energy, sslidar_eff, sslidar_pos, sslidar_range, sslidar_nranges):
         super().__init__()  # 调用父类的初始化方法
         self.gas = gas
         self.wav_min = wav_min
@@ -260,8 +338,7 @@ class LBLRTMThread(QtCore.QThread):
         self.line_data = line_data
         self.mls_data = mls_data
         self.profile_num = profile_num
-        self.day_of_year = day_of_year
-        self.albedo = albedo
+        self.albedo_value = albedo_value
         self.sza = sza
         self.phi0 = phi0
         self.umu = umu
@@ -270,7 +347,9 @@ class LBLRTMThread(QtCore.QThread):
         self.FWHM = FWHM
         self.vis = vis
         self.atm_mode = atm_mode
+        self.tab = tab
         self.surface_type = surface_type
+        self.albedo_type = albedo_type
         self.ssa = ssa
         self.gg = gg
         self.source_type = source_type
@@ -289,21 +368,30 @@ class LBLRTMThread(QtCore.QThread):
             # 解决调试过程中无法停在QThread里的断点的问题，当不调试时记得注释掉这一行
             # debugpy.debug_this_thread()
 
-            # 读取线数据和环境参数
             dictLineLists = py4cats.higstract(self.line_data,(self.wav_min,self.wav_max))
             mls = py4cats.atmRead(self.mls_data,extract=self.gas)
-
+            # # 读取吸收截面查找表
+            # with open('xs_Array.pkl','rb') as f:
+            #     xs_Array = pickle.load(f)
+            # # 根据波数范围截取吸收截面数据
+            # truncated_xsArray = []  # 用于存储截取后的数组
+            # # 遍历 xs_Array 中的每个元素
+            # for xs in xs_Array:
+            #     truncated_array = manual_deepcopy(xs)
+            #     truncated_array = truncated_array.truncate((self.wav_min,self.wav_max))
+            #     truncated_xsArray.append(truncated_array)  # 将截取后的结果添加到列表中
+            # # 找到与大气数据对应的吸收截面数据
+            # matched_xsArray = search_matched_xsArray(mls,truncated_xsArray)
             # 计算光学厚度、透过率
+            # dodList = py4cats.lbl2od(mls,dictLineLists,sampling=0.1, nGrids=1)
             dodList = py4cats.lbl2od(mls,dictLineLists)
             todList = py4cats.dod2tod(dodList)
+
             # radNadir_0 = py4cats.dod2ri(dodList, obsAngle=180, tSurface='BoA',space=-6000) # 因为太阳被形容为温度为6000K的黑体，所以space=-6000代表太阳光谱，这个space变量也可以是文件名，即可从文件中读取辐射光谱
             # radNadir = radNadir_0.convolve(self.spec_Res, 'G') # 卷积操作
 
-            # 更新进度条
-            self.progressChanged.emit(10)
-            # 定期检查终止线程的标志
-            if self.stop_requested:
-                self.progressChanged.emit(0)
+            # 更新进度条并检查终止线程的标志
+            if self.check_stop_requested(progress=10): 
                 return
 
             # 计算辐射强度
@@ -322,37 +410,36 @@ class LBLRTMThread(QtCore.QThread):
                         variables[parts[0]] = parts[2]
                     else :
                         variables[parts[0]] = ' '.join(parts[1:])
-            file.close()
             # 为防止出现波数起始值不统一的情况，直接使用todList的波数值，即原始线数据的实际波数值，不使用UI界面上读取的波数值
             # 同时需要注意，这里的波长值必须与太阳光谱kurudz_0.01nm.txt里的波长值完全一致，不然Libradtran无法运行
             column_kurudz_wav = []
             # 读取太阳光谱kurudz_0.01nm.txt里的波长值
             with open('kurudz_0.01nm.txt','r') as f:
                 lines = f.readlines()
-            f.close()
-            for line in lines :
-                parts = line.split()
-                if not parts[0].startswith('#'):
-                    column_kurudz_wav.append(float(parts[0]))
-            # 找到第一个大于wavelength_min的波长值(这一行很耗时间，所以设置一个检查点)
-            wavelength_min_input = min([wav for wav in column_kurudz_wav if wav > 1/(todList.grid()[-1]*10**(-7))])
-            # 定期检查终止线程的标志
-            if self.stop_requested:
-                self.progressChanged.emit(0)
+                for line in lines :
+                    parts = line.split()
+                    if not parts[0].startswith('#'):
+                        column_kurudz_wav.append(float(parts[0]))
+            # 找到第一个大于wavelength_min的波长值(这一行很耗时间)
+            # wavelength_min_input = min([wav for wav in column_kurudz_wav if wav > 1/(todList.grid()[-1]*10**(-7))])
+            # # 找到第一个小于wavelength_max的波长值(这一行很耗时间)
+            # wavelength_max_input = max([wav for wav in column_kurudz_wav if wav < 1/(todList.grid()[0]*10**(-7))])
+            # 找到大于wavelength_min且最接近的波长
+            wavelength_min_threshold = 1 / (todList.grid()[-1] * 10**(-7))
+            wavelength_min_input = min((wav for wav in column_kurudz_wav if wav > wavelength_min_threshold),
+                           key=lambda x: abs(x - wavelength_min_threshold))
+
+            # 找到小于wavelength_max且最接近的波长
+            wavelength_max_threshold = 1 / (todList.grid()[0] * 10**(-7))
+            wavelength_max_input = min((wav for wav in column_kurudz_wav if wav < wavelength_max_threshold),
+                                    key=lambda x: abs(x - wavelength_max_threshold))
+
+            # 更新进度条并检查终止线程的标志
+            if self.check_stop_requested(progress=30): 
                 return
-            # 找到第一个小于wavelength_max的波长值(这一行很耗时间，所以设置一个检查点)
-            wavelength_max_input = max([wav for wav in column_kurudz_wav if wav < 1/(todList.grid()[0]*10**(-7))])
-            # 定期检查终止线程的标志
-            if self.stop_requested:
-                self.progressChanged.emit(0)
-                return
-            # 更新进度条
-            self.progressChanged.emit(25)
-            time.sleep(2)
 
             # 根据UI界面的参数修改INP文件
             variables['wavelength'] = str(wavelength_min_input) + ' ' + str(wavelength_max_input)
-            variables['day_of_year'] = self.day_of_year
             variables['sza'] = int(self.sza)
             variables['phi0'] = self.phi0
             variables['umu'] = self.umu
@@ -365,12 +452,7 @@ class LBLRTMThread(QtCore.QThread):
                 variables['aerosol_visibility'] = self.vis
                 variables['aerosol_modify ssa set'] = self.ssa
                 variables['aerosol_modify gg set'] = self.gg
-            # 如果地表类型为自定义，则读取地表反射率值
-            if self.surface_type == 0:
-                variables['albedo'] = self.albedo
-            else :
-                variables['albedo_library'] = 'IGBP'
-                variables['brdf_rpv_type'] = self.surface_type
+
             # 如果光源为主动光源，则修改rte_solver,删除output_user lambda wavenumber uu和slit_function_file,并且读取sslidar相关参数值(注意要保留source solar)
             if self.source_type == 2:
                 variables['rte_solver'] = 'sslidar'
@@ -382,93 +464,377 @@ class LBLRTMThread(QtCore.QThread):
                 variables['sslidar position'] = self.sslidar_pos
                 variables['sslidar_nranges'] = self.sslidar_nranges
                 variables['sslidar range'] = self.sslidar_range
-            # 将读取的变量写入INP文件
-            filename_inp = 'UVSPEC_Clear_' + self.gas + '.INP'
-            filename_out = 'UVSPEC_Clear_' + self.gas + '.out'
-            with open(filename_inp, 'w') as file:
-                for key, value in variables.items():
-                    file.write(f"{key} {value}\n")
-            file.close()
+            
             # 计算分子光学厚度
             mol_tau_file.mol_tau(self,self.gas,self.wav_min,self.wav_max,self.line_data,self.mls_data,self.profile_num,self.stop_requested)
-
-            # 更新进度条
-            self.progressChanged.emit(60)
-            # 定期检查终止线程的标志
-            if self.stop_requested:
-                self.progressChanged.emit(0)
+            # 更新进度条并检查终止线程的标志
+            if self.check_stop_requested(progress=50): 
                 return
-            # time.sleep(2)
-
+            
             # 生成狭缝函数(光谱响应函数)
             run_command(f"../../libRadtran2.0.5/libRadtran-2.0.5/bin/make_slitfunction -f {self.FWHM} -r 0.01 -t {self.slit_type} > slit.dat")
-
-            # 更新进度条
-            self.progressChanged.emit(70)
-            # 定期检查终止线程的标志
-            if self.stop_requested:
-                self.progressChanged.emit(0)
+            # 更新进度条并检查终止线程的标志
+            if self.check_stop_requested(progress=70): 
                 return
-            # time.sleep(2)
+            
+            # 把所有参数都读取完成之后，再进行批量计算的相关操作
+            # 判断现在设置的是地表类型还是地表反射率
+            if self.tab == 0: ## 设置地表类型
+                if self.surface_type == 17:
+                    EW_hemis = 'E' if Subwindow_IGBP.comboBox.currentIndex() == 0 else 'W'
+                    NS_hemis = 'N' if Subwindow_IGBP.comboBox_2.currentIndex() == 0 else 'S' 
+                    lat = float(Subwindow_IGBP.lineEdit_2.text())
+                    lon = float(Subwindow_IGBP.lineEdit.text())
+                    variables['latitude'] = NS_hemis + ' ' + lat
+                    variables['longitude'] = EW_hemis + ' ' + lon
+                    variables['albedo_library'] = 'IGBP'
+                    variables['surface_type_map'] = 'IGBP.nc'
+                else :
+                    variables['albedo_library'] = 'IGBP'
+                    variables['brdf_rpv_type'] = self.surface_type + 1
+            elif self.tab == 1:  ## 设置地表反射率
+                if self.albedo_type == 0:
+                    variables['albedo'] = self.albedo_value
+                else :
+                    # EW_hemis = 1 if Subwindow_IGBP.comboBox.currentIndex() == 0 else -1
+                    # NS_hemis = 1 if Subwindow_IGBP.comboBox_2.currentIndex() == 0 else -1
+                    # 打开文件并读取反射率数据(根据所在波段选择反射率数据,1000nm以下用Band1数据，1000-1800nm用Band5数据，1800nm以上用Band7数据)
+                    if wavelength_min_input <= 1000 :
+                        filename_ref = 'output_data_1.txt'
+                    elif wavelength_min_input > 1000 and wavelength_min_input < 1800  :
+                        filename_ref = 'output_data_5.txt'
+                    elif wavelength_min_input >= 1800 :
+                        filename_ref = 'output_data_7.txt'
+                    with open(filename_ref, 'r') as file:
+                        lines = file.readlines()
+                        # 创建空列表来存储第二列和第三列的数据
+                        column1, column2, column3 = [], [], []
+                        # 遍历每一行
+                        for line in lines:
+                            # 使用空格分割每一行的数据
+                            parts = line.split()
+                            # 将第一列、第二列和第三列的数据添加到对应的列表中
+                            column1.append(float(parts[0])), column2.append(float(parts[1])), column3.append(float(parts[2]))
 
-            # 控制命令行,TOA值用Libradtran的DISORT模型算，所有诊断消息将写入verbose.txt
-            run_command(f"../../libRadtran2.0.5/libRadtran-2.0.5/bin/uvspec <{filename_inp}> {filename_out} 2> verbose.txt")
+                    pattern_digit = r'^[+-]?\d+(\.\d+)?$' # 匹配纯数字的正则表达式（整数或小数）
+                    pattern_range = r'^[+-]?\d+(\.\d+)?\s*,\s*[+-]?\d+(\.\d+)?$' # 匹配数字+','+数字的正则表达式
+                    # 判断输入是纯数字还是范围
+                    if re.match(pattern_digit,Subwindow_albedo.lineEdit.text()) and re.match(pattern_digit,Subwindow_albedo.lineEdit_2.text()):
+                        print('输入是纯数字')
+                        lon = float(Subwindow_albedo.lineEdit.text())
+                        lat = float(Subwindow_albedo.lineEdit_2.text())
+                        # 找到与用户输入的经度最接近的值
+                        closest_lon = min(column1, key=lambda list_lon: abs(list_lon - lon))
+                        # 找到与用户输入的纬度最接近的值
+                        closest_lat = min(column2, key=lambda list_lat: abs(list_lat - lat))
+                        # 新建索引
+                        index = None
+                        # 根据找到的经纬度值，确定对应索引
+                        for i in range(len(column1)):
+                            if column1[i] == closest_lon and column2[i] == closest_lat:
+                                index = i
+                                break
+                        # 如果找到匹配的索引，获取对应的反射率数据
+                        if index is not None:
+                            if column3[index] == 0:
+                                # 没有地表反射率数据就设置一个默认值
+                                variables['albedo'] = 0.3
+                                print('该位置尚无地表反射率数据')
+                            else :
+                                variables['albedo'] = column3[index]
+                                print("成功获取对应反射率")
+                        else:
+                            print("未获取对应反射率")
+                    elif re.match(pattern_range,Subwindow_albedo.lineEdit.text()) and re.match(pattern_range,Subwindow_albedo.lineEdit_2.text()):
+                        print('输入是范围')
+                        lon_parts = Subwindow_albedo.lineEdit.text().split(',')
+                        lon_min = float(lon_parts[0])
+                        lon_max = float(lon_parts[1])
+                        lat_parts = Subwindow_albedo.lineEdit_2.text().split(',')
+                        lat_min = float(lat_parts[0])
+                        lat_max = float(lat_parts[1])
+                        # # 分别找到与用户输入的最大经度和最小经度最接近的值
+                        # closest_lon_min = min(column1, key=lambda list_lon: abs(list_lon - lon_min))
+                        # closest_lon_max = min(column1, key=lambda list_lon: abs(list_lon - lon_max))
+                        # # 分别找到与用户输入的最大纬度和最小纬度最接近的值
+                        # closest_lat_min = min(column2, key=lambda list_lat: abs(list_lat - lat_min))
+                        # closest_lat_max = min(column2, key=lambda list_lat: abs(list_lat - lat_max))
+                        
+                        # 得到用于仿真的经纬度范围(直接根据用户指定的经纬度范围，取出地表反射率文件的经纬度数据中对应范围内的元素，这里为了节省计算时间就不再找最接近的值)
+                        # 使用布尔索引取出指定范围内的元素(将列表转换成numpy数组才能这么操作);并且要注意,反射率文件中的经纬度不是递增的,有很长的一段重复,所以要从lon_MCD12C1.txt和lat_MCD12C1.txt中读取
+                        with open('lon_MCD12C1.txt', 'r') as file:
+                            lon_MCD12C1 = np.array(file.readlines())
+                            lon_MCD12C1 = lon_MCD12C1.astype(float)
+                        with open('lat_MCD12C1.txt', 'r') as file:
+                            lat_MCD12C1 = np.array(file.readlines())
+                            lat_MCD12C1 = lat_MCD12C1.astype(float)
+                        lon_range = lon_MCD12C1[(lon_MCD12C1 >= lon_min) & (lon_MCD12C1 <= lon_max)]
+                        lat_range = lat_MCD12C1[(lat_MCD12C1 >= lat_min) & (lat_MCD12C1 <= lat_max)]
+                    
+                    else :
+                        print('输入有误,请重新输入!')
 
-            # 打开文件并读取TOA数据
-            with open(filename_out, 'r') as file:
-                lines = file.readlines()
-            file.close()
-            # 创建空列表来存储第二列和第三列的数据
-            column1 = []
-            column2 = []
-            column3 = []
-            # 遍历每一行
-            for line in lines:
-                # 使用空格分割每一行的数据
-                parts = line.split()
-                # 检查是否有足够的数据列
-                if len(parts) >= 3:
-                    # 将第一列、第二列和第三列的数据添加到对应的列表中
-                    column1.append(float(parts[0]))
-                    column2.append(float(parts[1]))
-                    column3.append(float(parts[2]))
+            # 如果地表反射率没有指定经纬度范围
+            if not (self.tab == 1 and self.albedo_type == 1 and re.match(pattern_range, Subwindow_albedo.lineEdit.text()) and re.match(pattern_range, Subwindow_albedo.lineEdit_2.text())):
+                # 将读取的变量写入INP文件
+                filename_inp = 'UVSPEC_Clear_' + self.gas + '.INP'
+                filename_out = 'UVSPEC_Clear_' + self.gas + '.out'
+                with open(filename_inp, 'w') as file:
+                    for key, value in variables.items():
+                        file.write(f"{key} {value}\n")
 
-            # 计算绘图所需的数据
-            chart_od_data = (todList.grid(), np.log10(todList.base))
-            tranList = np.exp(-2 * todList)
-            chart_tran_data = (todList.grid(), tranList.base)
-            # chart_radiance_data = (radNadir.grid(), radNadir * (10 ** 7))
-            chart_radiance_data = (column2, column3)
+                start_time = time.time()
+                # 控制命令行,TOA值用Libradtran的DISORT模型算，所有诊断消息将写入verbose.txt
+                run_command(f"../../libRadtran2.0.5/libRadtran-2.0.5/bin/uvspec <{filename_inp}> {filename_out} 2> verbose.txt")
+                end_time = time.time()
+                elapsed_time = end_time - start_time
+                print(f"Execution time: {elapsed_time:.6f} seconds")
 
-            # 更新进度条
-            self.progressChanged.emit(80)
-            # 定期检查终止线程的标志
-            if self.stop_requested:
-                self.progressChanged.emit(0)
-                return
-            # time.sleep(2)
+                # 打开文件并读取TOA数据
+                with open(filename_out, 'r') as file:
+                    lines = file.readlines()
+                # 创建空列表来存储第二列和第三列的数据
+                column1, column2, column3 = [], [], []
+                # 遍历每一行
+                for line in lines:
+                    # 使用空格分割每一行的数据
+                    parts = line.split()
+                    # 检查是否有足够的数据列
+                    if len(parts) >= 3:
+                        # 将第一列、第二列和第三列的数据添加到对应的列表中
+                        column1.append(float(parts[0]))
+                        column2.append(float(parts[1]))
+                        column3.append(float(parts[2]))
 
-            # 发出信号，携带绘图数据，因为 QChart 是一个继承自 QGraphicsView 的 QWidget，因此它应该在 GUI 线程（主线程）中创建和操作。
-            self.resultReady.emit((chart_od_data, chart_tran_data, chart_radiance_data))
-            # 发出信号，携带表格2数据
-            self.tableChanged_2.emit((column1,column3))
-            # 计算表格所需数据(辐亮度最大值、最小值、中位数，光学厚度最大值、最小值、中位数)
-            column3.sort()
-            half_TOA = len(column3) // 2
-            max_TOA = max(column3)
-            min_TOA = min(column3)
-            median_TOA = (column3[half_TOA] + column3[~half_TOA])/2
-            todList.base.sort()
-            half_TOD = len(todList.base) // 2
-            max_TOD = max(todList.base)
-            min_TOD = min(todList.base)
-            median_TOD = (todList.base[half_TOD] + todList.base[~half_TOD])/2
-            # 发出信号，携带表格数据
-            self.tableChanged.emit((max_TOA,min_TOA,median_TOA,max_TOD,min_TOD,median_TOD))
-        
+                # 计算绘图所需的数据
+                chart_od_data = (todList.grid(), np.log10(todList.base))
+                tranList = np.exp(-2 * todList)
+                chart_tran_data = (todList.grid(), tranList.base)
+                # chart_radiance_data = (radNadir.grid(), radNadir * (10 ** 7))
+                chart_radiance_data = (column2, column3)
+
+                # 更新进度条并检查终止线程的标志
+                if self.check_stop_requested(progress=85): 
+                    return
+
+                # 发出信号，携带绘图数据，因为 QChart 是一个继承自 QGraphicsView 的 QWidget，因此它应该在 GUI 线程（主线程）中创建和操作。
+                self.resultReady.emit((chart_od_data, chart_tran_data, chart_radiance_data))
+                # 发出信号，携带表格2数据
+                self.tableChanged_2.emit((column1,column3))
+                # 计算表格所需数据(辐亮度最大值、最小值、中位数，光学厚度最大值、最小值、中位数)
+                column3.sort()
+                half_TOA = len(column3) // 2
+                max_TOA = max(column3)
+                min_TOA = min(column3)
+                median_TOA = (column3[half_TOA] + column3[~half_TOA])/2
+                todList.base.sort()
+                half_TOD = len(todList.base) // 2
+                max_TOD = max(todList.base)
+                min_TOD = min(todList.base)
+                median_TOD = (todList.base[half_TOD] + todList.base[~half_TOD])/2
+                # 发出信号，携带表格数据
+                self.tableChanged.emit((max_TOA,min_TOA,median_TOA,max_TOD,min_TOD,median_TOD))
+
+                # 更新进度条并检查终止线程的标志
+                if self.check_stop_requested(progress=100): 
+                    return
+            
+            else :
+                # 清空输出的图片和数据表格
+                self.clear_signal.emit()
+                # 定义INP和OUT文件的路径
+                inp_dir = './BatchCompute/INP/'
+                out_dir = './BatchCompute/OUT/'
+                # 清空BatchCompute里INP和OUT文件夹中的文件
+                clear_folder(inp_dir)
+                clear_folder(out_dir)
+                # 总的运行次数
+                total_iterations = len(lon_range) * len(lat_range)
+                # 计数器，跟踪当前运行次数
+                current_iteration = 0
+
+                start_time = time.time()
+                
+                # 将读取的变量写入INP文件
+                for i in range(len(lon_range)):
+                    for j in range(len(lat_range)):    
+                        # 更新当前运行次数
+                        current_iteration += 1
+                        # 输出当前进度
+                        print(f"正在运行第 {current_iteration} 个，共 {total_iterations} 个(lon_range: {i+1}/{len(lon_range)}, lat_range: {j+1}/{len(lat_range)})")
+                        
+                        filename_inp = './BatchCompute/INP/' + self.gas + '_' + str(lon_range[i]) + '_' + str(lat_range[j]) + '.INP'
+                        filename_out = './BatchCompute/OUT/' + self.gas + '_' + str(lon_range[i]) + '_' + str(lat_range[j]) + '.OUT'
+                        # 打开文件读取反射率数据
+                        with open(filename_ref, 'r') as file:
+                            lines = file.readlines()
+                            # 创建空列表来存储第二列和第三列的数据
+                            column1, column2, column3 = [], [], []
+                            # 遍历每一行
+                            for line in lines:
+                                # 使用空格分割每一行的数据
+                                parts = line.split()
+                                # 将第一列、第二列和第三列的数据添加到对应的列表中
+                                column1.append(float(parts[0])), column2.append(float(parts[1])), column3.append(float(parts[2]))
+                        # 新建索引
+                        index = None
+                        # 根据找到的经纬度值，确定对应索引
+                        for m in range(len(column1)):
+                            if column1[m] == lon_range[i] and column2[m] == lat_range[j]:
+                                index = m
+                                break
+                        # 如果找到匹配的索引，获取对应的反射率数据
+                        if index is not None:
+                            if column3[index] == 0:
+                                # 没有地表反射率数据就设置一个默认值
+                                variables['albedo'] = 0.3
+                                print('该位置尚无地表反射率数据')
+                            else :
+                                variables['albedo'] = column3[index]
+                                print("成功获取对应反射率")
+                        else:
+                            print("未获取对应反射率")
+
+                        with open(filename_inp, 'w') as file:
+                            for key, value in variables.items():
+                                file.write(f"{key} {value}\n")
+                        
+                        # 控制命令行,TOA值用Libradtran的DISORT模型算，所有诊断消息将写入对应的verbose.txt
+                        # verbose_file = './BatchCompute/verbose/' + 'verbose' + '_' + str(lon_range[i]) + '_' + str(lat_range[j]) + '.txt'
+                        run_command(f"../../libRadtran2.0.5/libRadtran-2.0.5/bin/uvspec <{filename_inp}> {filename_out} ")
+                end_time = time.time()
+                elapsed_time = end_time - start_time
+                print(f"Execution time: {elapsed_time:.6f} seconds")
+                # 更新进度条并检查终止线程的标志
+                if self.check_stop_requested(progress=85): 
+                    return
+                
+                # 获取OUT文件夹中的所有文件列表
+                out_files = [f for f in os.listdir(out_dir) if f.endswith('.OUT')]
+                # 初始化空的经纬度列表
+                lon_list = []
+                lat_list = []
+                # 初始化四维数组数据
+                toa_radiance_data = {}
+                # 遍历所有的OUT文件并提取数据
+                for file_name in out_files:
+                    # 从文件名中提取经纬度信息
+                    parts = file_name.split('_')
+                    gas = parts[0]
+                    lon = float(parts[1])
+                    lat = float(parts[2].replace('.OUT', ''))
+                    
+                    # 将经纬度添加到列表
+                    if lon not in lon_list:
+                        lon_list.append(lon)
+                    if lat not in lat_list:
+                        lat_list.append(lat)                  
+                    # 读取OUT文件内容
+                    file_path = os.path.join(out_dir, file_name)
+                    data = np.loadtxt(file_path)  # 假设文件内容为三列数据，波长、波数、TOA radiance
+                    # 保存数据到字典，字典键为经度、纬度，值为读取的数据
+                    toa_radiance_data[(lon, lat)] = data
+                
+                # 去重并排序经纬度
+                lon_list = sorted(lon_list)
+                lat_list = sorted(lat_list)
+                # 获取波长和波数的维度大小（假设所有文件的数据行列数相同）
+                sample_data = toa_radiance_data[(lon_list[0], lat_list[0])]
+                wavelength_size = sample_data.shape[0]  # 行数
+                # 创建四维数组，大小为 (经度，纬度，波长，列数)
+                four_dim_data = np.zeros((len(lon_list), len(lat_list), wavelength_size, 3))
+                # 将数据填充到四维数组
+                for i, lon in enumerate(lon_list):
+                    for j, lat in enumerate(lat_list):
+                        four_dim_data[i, j, :, :] = toa_radiance_data[(lon, lat)]
+                # 创建 NetCDF 文件
+                nc_filename = 'toa_radiance_data.nc'
+                with Dataset(nc_filename, 'w', format='NETCDF4') as ncfile:
+                    # 创建维度
+                    ncfile.createDimension('longitude', len(lon_list))
+                    ncfile.createDimension('latitude', len(lat_list))
+                    ncfile.createDimension('wavelength', wavelength_size)
+                    ncfile.createDimension('variable_number', 3)
+
+                    # 创建变量
+                    longitudes = ncfile.createVariable('longitude', 'f4', ('longitude',))
+                    latitudes = ncfile.createVariable('latitude', 'f4', ('latitude',))
+                    wavelengths = ncfile.createVariable('wavelength', 'f4', ('wavelength',))
+                    variable_number = ncfile.createVariable('variable_number', 'f4', ('variable_number',))
+                    toa_radiances = ncfile.createVariable('toa_radiance', 'f4', ('variable_number', 'wavelength', 'latitude', 'longitude'))
+
+                    # 填充变量数据
+                    longitudes[:] = lon_list
+                    latitudes[:] = lat_list
+                    wavelengths[:] = sample_data[:, 0]  # 假设所有文件的第一列是波长
+                    variable_number[:] = np.arange(3)  # 3列数据
+                    # toa_radiances[:, :, :, :] = four_dim_data
+                    # Python 和 MATLAB 对数组维度的存储顺序不同，所以要在这里对数组进行转置，确保在MATLAB中读取顺序正确
+                    toa_radiances[:, :, :, :] = np.transpose(four_dim_data, (3, 2, 1, 0))
+
+                    print(f"数据已成功存储到 {nc_filename} 文件中。")
+                # 更新进度条并检查终止线程的标志
+                if self.check_stop_requested(progress=100): 
+                    return
+                
     def stop(self):
         self.stop_requested = True
+        
+    def check_stop_requested(self, progress):
+        # 更新进度条
+        self.progressChanged.emit(progress)
+        # 检查是否请求停止线程
+        if self.stop_requested:
+            # 请求停止时将进度条归零
+            self.progressChanged.emit(0)
+            return True
+        return False
 
+# 清除文件夹中所有文件的函数
+def clear_folder(folder_path):
+    # 检查文件夹是否存在
+    if os.path.exists(folder_path):
+        # 遍历文件夹中的所有内容
+        for filename in os.listdir(folder_path):
+            file_path = os.path.join(folder_path, filename)
+            try:
+                # 如果是文件或者符号链接则删除
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)
+                # 如果是文件夹则删除文件夹及其内容
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except Exception as e:
+                print(f'Failed to delete {file_path}. Reason: {e}')
+    else:
+        print(f'Folder "{folder_path}" does not exist.')
+
+# 手动创建一个新的xsArray实例，并将所需属性传递给构造函数进行拷贝，实现深拷贝目的
+def manual_deepcopy(xs):
+    new_xs = xsArray(xs.view(np.ndarray).copy(), xLimits=copy.deepcopy(xs.x), p=copy.deepcopy(xs.p), t=copy.deepcopy(xs.t), molec=copy.deepcopy(xs.molec), lineShape=copy.deepcopy(xs.lineShape))
+    return new_xs
+
+# 遍历 mls 中的每一组压强和温度组合，找到对应的 xsArray
+def search_matched_xsArray(mls,xs_Array):
+    # 创建一个存储匹配结果的列表
+    matched_xsArray = []
+    for i in range(len(mls['p'])):
+        p_mls = mls['p'][i]  # 当前大气压强
+        t_mls = mls['T'][i]  # 当前大气温度
+
+        # 分别找到最接近的 p 和 t
+        closest_p = min(xs_Array, key=lambda xs: abs(xs.p - p_mls))
+        closest_t = min(xs_Array, key=lambda xs: abs(xs.t - t_mls))
+        # 遍历 xs_Array，寻找同时满足最接近的 p 和 t 的元素
+        for xs in xs_Array:
+            if xs.p == closest_p.p and xs.t == closest_t.t:
+                xs_temp = manual_deepcopy(xs)
+                xs_temp.p = p_mls
+                xs_temp.t = t_mls
+                matched_xsArray.append(xs_temp)
+                break
+    return matched_xsArray
+        
 # chart绘图函数
 def chart_draw(chart_titie,x_data,y_data,x_label,y_label):
     # 创建chart
@@ -550,6 +916,8 @@ if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     QApplication.setOverrideCursor(Qt.CursorShape.SizeHorCursor)
     MainWindow = window()  # 创建窗体对象
+    Subwindow_IGBP = window_IGBP()  # 创建子窗体-IGBP
+    Subwindow_albedo = window_albedo() # 创建子窗体-albedo
     
     # 绘制大气模式
     atmos_mode()
@@ -558,10 +926,15 @@ if __name__ == '__main__':
     MainWindow.setWindowIcon(QIcon("logo.png"))
     MainWindow.setWindowTitle("Target gas radiation transfer simulation system")
 
-    # screen = QGuiApplication.primaryScreen().size()
-    # width = screen.width()
-    # height = screen.height()
-    MainWindow.resize(1280, 1100)
+    # 获取屏幕尺寸
+    screen = QGuiApplication.primaryScreen().size()
+    width = screen.width()
+    height = screen.height()
+    # 设置窗口位置、几何
+    x = (screen.width() - screen.width()//2) // 2
+    y = (screen.height() - screen.height()//2) // 2
+    # 将主窗口设置在屏幕中间（但是效果未实现，每次出现的位置都不固定）
+    MainWindow.setGeometry(x,y,width//2, height//2)
 
-    MainWindow.show()  # 显示窗体
+    MainWindow.show()
     sys.exit(app.exec())  # 程序关闭时退出进程

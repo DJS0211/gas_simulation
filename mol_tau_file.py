@@ -23,7 +23,6 @@ def mol_tau(self,gas, wav_min, wav_max, line_data, mls_data, profile_num, stop_r
 																	
 		# 设定大气中CO2的浓度
 		# num = '409'
-
 		# 设置CO2以及CH4的浓度
 		# origin = int(num)
 		# mls['CO2'] = mls['CO2'] * origin / 330

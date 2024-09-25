@@ -1,0 +1,36 @@
+atmosphere_file ./dat/USS_16.dat
+source solar kurudz_0.01nm.txt
+
+mol_tau_file abs mol_tau_file_CO2.txt
+
+ 
+day_of_year 170
+
+albedo 0.3654
+sza 0
+phi0 40.0
+umu 1.0
+phi 90.0
+zout toa
+
+rte_solver disort
+
+number_of_streams 16
+
+wavelength 1571.02 1573.99
+slit_function_file slit.dat
+
+aerosol_vulcan 1
+
+aerosol_haze 5
+
+aerosol_season 1
+
+aerosol_visibility 20.0
+#aerosol_file tau AERO_TAU.DAT
+
+aerosol_modify ssa set 0.85
+aerosol_modify gg set 0.7
+output_user lambda wavenumber uu
+
+verbose 
